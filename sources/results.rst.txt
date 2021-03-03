@@ -1,0 +1,18 @@
+Результаты
+==========================
+
+Первая сетка:
+
+.. image:: _static/grid-1.jpg
+	:height: 300px
+	:width: 300px
+
+Вторая сетка:
+
+.. image:: _static/grid-2.jpg
+	:height: 300px
+	:width: 300px
+
+Количество всех ячеек во второй сетке:
+
+.. image:: _static/results.png

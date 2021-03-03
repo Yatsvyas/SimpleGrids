@@ -1,0 +1,8 @@
+Листинг программы
+=================================
+
+.. literalinclude::  _static/step-1.cc
+	:language: c++
+	:encoding: latin-1
+	:linenos:
+

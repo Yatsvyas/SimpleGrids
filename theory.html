@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Теоретическая часть &#8212; документация SimpleGrids Simple Grids</title>
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script src="static/translations.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Листинг программы" href="listing.html" />
+    <link rel="prev" title="Что делает эта программа" href="start_theory.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="listing.html" title="Листинг программы"
+             accesskey="N">вперёд</a> |</li>
+        <li class="right" >
+          <a href="start_theory.html" title="Что делает эта программа"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация SimpleGrids Simple Grids</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Теоретическая часть</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>Теоретическая часть<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h1>
+<p><strong>1. Include файлы.</strong></p>
+<p>Самый фундаментальный класс в библиотеке - класс Triangulation. Он объявлен здесь:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;deal.II/grid/tria.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>Следующий заголовочные файлы необходимы для циклов с ячейками:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;deal.II/grid/tria_accessor.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;deal.II/grid/tria_iterator.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>Здесь подключаются некоторые функции для создания стандартных сеток:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;deal.II/grid/grid_generator.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>Вывод сеток в различных графических форматах:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;deal.II/grid/grid_our.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>Библиотеки для вывода в C++:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;fstream&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>Библиотека для использования математических функций:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>Для удобства использования всех функций deal.II, а так же для избежания конфликтов с другими библиотеками, используем пространство имён dealii:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">dealii</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>2. Создание первой сетки.</strong></p>
+<p>В первой функции мы просто создадим квадратную область, которую потом разобьём на множество более маленьких.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">first_grid</span><span class="p">()</span>
+<span class="p">{</span>
+</pre></div>
+</div>
+<p>Первая вещь, которую мы должны сделать - это создать объект класса Triangulation:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Triangulation</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span> <span class="n">triangulation</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>«&lt;2&gt;» - в данном случае означает мерность пространства, в котором мы будем работать.</p>
+<p>Далее, мы хотим заполнить наш объект одной ячейкой для квадратной области. Для объекта проводим разбиение на области четыре раза, чтобы получить в общем <span class="math notranslate nohighlight">\(4^4=256\)</span> ячеек:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">GridGenerator</span><span class="o">::</span><span class="n">hyper_cube</span><span class="p">(</span><span class="n">triangulation</span><span class="p">);</span>
+<span class="n">triangulation</span><span class="p">.</span><span class="n">refine_global</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Теперь мы хотим записать графическое представление нашей сетки в выходной файл. Класс GridOut  в deal.II может сделать это в нескольких графических форматах. Возьмём формат SVG для удобства окрытия в браузере:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span> <span class="n">out</span><span class="p">(</span><span class="s">&quot;grid-1.svg&quot;</span><span class="p">);</span>
+<span class="n">GridOut</span> <span class="n">grid_out</span><span class="p">;</span>
+<span class="n">grid_out</span><span class="p">.</span><span class="n">write_svg</span><span class="p">(</span><span class="n">triangulation</span><span class="p">,</span> <span class="n">out</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Grid written to grid-1.svg&quot;</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>3. Создание второй сетки.</strong></p>
+<p>Во второй функции мы создадим сетку немного посложнее - кольцевую область.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">secont_grid</span><span class="p">()</span>
+<span class="p">{</span>
+</pre></div>
+</div>
+<p>Снова создаём объект класса Triangulation в 2-мерном пространстве:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Triangulation</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span> <span class="n">triangulaion</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Далее, заполним кольцевую область. Центром кольца должна быть точка (1, 0), а внутренний и внешний радиус 0.5 и 1.0, соответственно. Число ячеек, на которое разобьётся кольцо, может быть определенно автоматически, но мы в качестве последнего аргумента установим 10, т.е. разобьётся на 10 ячеек:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span> <span class="n">center</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="k">const</span> <span class="kt">double</span> <span class="n">inner_radius</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">outer_radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+<span class="n">GridGenerator</span><span class="o">::</span><span class="n">hyper_shell</span><span class="p">(</span>
+        <span class="n">triangulation</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Для деменострации цикла, который проходит по всем ячейкам, уточним сетку в 5 шагов по направлению к внутреннему кругу области:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">step</span><span class="p">)</span>
+<span class="p">{</span>
+</pre></div>
+</div>
+<p>Далее, нам нужно в цикле использовать только активные ячейки триангуляции. Активные ячейки - это ячейки, которые ещё могут «делиться».
+Так как триангуляция это не обычный массив ячеек, придётся использовать специальный итератор, чтобы «пробежаться» по всем активным ячейками:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">it</span> <span class="o">=</span> <span class="n">triangulation</span><span class="p">.</span><span class="n">active_cell_iterators</span><span class="p">().</span><span class="n">begin</span><span class="p">();</span>
+        <span class="n">it</span> <span class="o">!=</span> <span class="n">triangulation</span><span class="p">.</span><span class="n">active_cell_iterators</span><span class="p">().</span><span class="n">end</span><span class="p">();</span>
+        <span class="o">++</span><span class="n">it</span><span class="p">)</span>
+        <span class="p">{</span>
+                <span class="k">auto</span> <span class="n">cell</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+<p>Вышеприведённый цикл можно записать в более короткой форме:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">cell</span> <span class="p">:</span> <span class="n">triangulation</span><span class="p">.</span><span class="n">active_cell_iterators</span><span class="p">())</span>
+<span class="p">{</span>
+</pre></div>
+</div>
+<p>Далее, мы хотим перебрать все вершины ячекк. Поскольку мы находимся в 2-х мерном пространстве, мы знаем, что каждая ячейка имеет ровно четыре вершины. Однако вместо использования константы 4, мы запишем так, чтобы цикл сам вычислял, в зависимости от мерности пространства, количество вершин у ячеек. Для этого используем класс GeometryInfo:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">v</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">GeometryInfo</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;::</span><span class="n">vertices_per_cell</span><span class="p">;</span> <span class="o">++</span><span class="n">v</span><span class="p">)</span>
+<span class="p">{</span>
+</pre></div>
+</div>
+<p>Если эта ячейка находится на внутренне границе, то хотя бы одна вершина должна находиться на внутреннем кольце, а значит иметь радиус до центра ровно 0.5. Можем вычислить это расстояние, и если это так, то мы активируем флаг это ячейки для последующей разбивки. После этого прерываем цикл и переходим к следующей ячейке.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">double</span> <span class="n">distance_from_center</span> <span class="o">=</span>
+        <span class="n">center</span><span class="p">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cell</span><span class="o">-&gt;</span><span class="n">vertex</span><span class="p">(</span><span class="n">v</span><span class="p">));</span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">distance_from_center</span> <span class="o">-</span> <span class="n">inner_radius</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">)</span>
+        <span class="p">{</span>
+                <span class="n">cell</span><span class="o">-&gt;</span><span class="n">set_refine_flag</span><span class="p">();</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Теперь, когда мы отметили все нужные ячейки, мы можем разбить их с использованием триангуляции:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">triangulation</span><span class="p">.</span><span class="n">execute_coarsening_and_refinement</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Наконец, после всех итераций, полученный файл мы хотим записать в формате SVG:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span> <span class="n">out</span><span class="p">(</span><span class="s">&quot;grid-2.svg&quot;</span><span class="p">);</span>
+<span class="n">GridOut</span> <span class="n">grid_out</span><span class="p">;</span>
+<span class="n">grid_out</span><span class="p">.</span><span class="n">write_svg</span><span class="p">(</span><span class="n">triangulation</span><span class="p">,</span> <span class="n">out</span><span class="p">);</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Grid written to grid-2.svg&quot;</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>4. Функция main()</strong></p>
+<p>Функция main() будет иметь следующий вид:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+        <span class="n">first_grid</span><span class="p">();</span>
+        <span class="n">second_grid</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Дополнительно</strong></p>
+<p>В качесте дополнительного упражнения вычислим общее количество ячеек и выведем это число:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">cell</span> <span class="p">:</span> <span class="n">triangulation</span><span class="p">.</span><span class="n">cell_iterators</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">count</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Count = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">count</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Предыдущий раздел</h4>
+  <p class="topless"><a href="start_theory.html"
+                        title="предыдущая глава">Что делает эта программа</a></p>
+  <h4>Следующий раздел</h4>
+  <p class="topless"><a href="listing.html"
+                        title="следующая глава">Листинг программы</a></p>
+  <div role="note" aria-label="source link">
+    <h3>Эта страница</h3>
+    <ul class="this-page-menu">
+      <li><a href="sources/theory.rst.txt"
+            rel="nofollow">Исходный текст</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Быстрый поиск</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="listing.html" title="Листинг программы"
+             >вперёд</a> |</li>
+        <li class="right" >
+          <a href="start_theory.html" title="Что делает эта программа"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация SimpleGrids Simple Grids</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Теоретическая часть</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Machnov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>
